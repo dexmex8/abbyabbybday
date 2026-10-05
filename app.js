@@ -18,6 +18,8 @@ const els = {
   hint: document.getElementById("hint"),
   stickers: document.getElementById("stickers"),
   confetti: document.getElementById("confetti"),
+  goodArtBtn: document.getElementById("goodArtBtn"),
+  bestArtBtn: document.getElementById("bestArtBtn"),
 };
 
 const reduceMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -58,8 +60,35 @@ function milestoneText(count) {
   return "";
 }
 
-// Where the door sits inside assets/home.png, as a fraction of the picture.
-const DOOR_BOX = { left: 0.39, top: 0.17, width: 0.38, height: 0.57 };
+// Good art is the original picture set. Best art is the hand-drawn set.
+// The buttons only swap these files, so Good art puts the book back as it was.
+const ART_STORAGE_KEY = "abby-art";
+const ART = {
+  good: {
+    door: { left: 0.39, top: 0.17, width: 0.38, height: 0.57 },
+    "assets/lake.png": { src: "assets/lake.png", w: 1122, h: 1402 },
+    "assets/walk.png": { src: "assets/walk.png", w: 1122, h: 1402 },
+    "assets/stumble.png": { src: "assets/stumble.png", w: 1122, h: 1402 },
+    "assets/home.png": { src: "assets/home.png", w: 1122, h: 1402 },
+  },
+  best: {
+    door: { left: 0.42, top: 0.055, width: 0.21, height: 0.52 },
+    "assets/lake.png": { src: "assets/hand/lake.png", w: 686, h: 636 },
+    "assets/walk.png": { src: "assets/hand/walk.png", w: 678, h: 532 },
+    "assets/stumble.png": { src: "assets/hand/stumble.png", w: 636, h: 364 },
+    "assets/home.png": { src: "assets/hand/home.png", w: 990, h: 826 },
+  },
+};
+
+function readArtStyle() {
+  try {
+    return localStorage.getItem(ART_STORAGE_KEY) === "best" ? "best" : "good";
+  } catch (err) {
+    return "good";
+  }
+}
+
+let artStyle = readArtStyle();
 
 let page = 0;
 let turning = false;
@@ -72,8 +101,41 @@ let confettiTimer = 0;
 let micToken = 0;
 let micState = freshMic();
 
+function applyArt(html) {
+  const set = ART[artStyle];
+  const wrap = document.createElement("div");
+  wrap.innerHTML = html;
+  wrap.querySelectorAll("img").forEach((img) => {
+    const file = set[img.getAttribute("src")];
+    if (!file) return;
+    img.setAttribute("src", file.src);
+    img.setAttribute("width", String(file.w));
+    img.setAttribute("height", String(file.h));
+  });
+  return wrap.innerHTML;
+}
+
 function tpl(id) {
-  return document.getElementById(id).innerHTML.trim();
+  return applyArt(document.getElementById(id).innerHTML.trim());
+}
+
+function paintArtSwitch() {
+  if (!els.goodArtBtn || !els.bestArtBtn) return;
+  const best = artStyle === "best";
+  els.goodArtBtn.setAttribute("aria-pressed", best ? "false" : "true");
+  els.bestArtBtn.setAttribute("aria-pressed", best ? "true" : "false");
+}
+
+function setArtStyle(next) {
+  if ((next !== "good" && next !== "best") || next === artStyle || turning) return;
+  artStyle = next;
+  try {
+    localStorage.setItem(ART_STORAGE_KEY, next);
+  } catch (err) {
+    // The button still switches the pictures for this visit.
+  }
+  paintArtSwitch();
+  if (page > 0) mountView(getView(page));
 }
 
 function getView(index) {
@@ -214,6 +276,7 @@ function updateChrome() {
   paintAngel();
   updateHint();
   syncOrientation();
+  paintArtSwitch();
   if (page === 5) resumeAudio();
 }
 
@@ -274,10 +337,11 @@ function positionDoors() {
     const originX = boxRect.left - figRect.left + (boxRect.width - drawnW) / 2;
     const originY = boxRect.top - figRect.top + (boxRect.height - drawnH) / 2;
 
-    door.style.left = `${originX + drawnW * DOOR_BOX.left}px`;
-    door.style.top = `${originY + drawnH * DOOR_BOX.top}px`;
-    door.style.width = `${drawnW * DOOR_BOX.width}px`;
-    door.style.height = `${drawnH * DOOR_BOX.height}px`;
+    const doorBox = ART[artStyle].door;
+    door.style.left = `${originX + drawnW * doorBox.left}px`;
+    door.style.top = `${originY + drawnH * doorBox.top}px`;
+    door.style.width = `${drawnW * doorBox.width}px`;
+    door.style.height = `${drawnH * doorBox.height}px`;
 
     if (!img.complete) img.addEventListener("load", positionDoors, { once: true });
   });
@@ -1046,6 +1110,14 @@ els.micBtn.addEventListener("click", () => {
 
 els.resetBtn.addEventListener("click", () => {
   resetAll();
+});
+
+els.goodArtBtn.addEventListener("click", () => {
+  setArtStyle("good");
+});
+
+els.bestArtBtn.addEventListener("click", () => {
+  setArtStyle("best");
 });
 
 function relayout() {

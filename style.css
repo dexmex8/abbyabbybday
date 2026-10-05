@@ -355,8 +355,8 @@ img {
 }
 
 .door {
-  /* Size and position come from positionDoor() in app.js, which maps the door in
-     assets/home.png onto wherever the picture actually lands after object-fit. */
+  /* Size and position come from positionDoors() in app.js, which maps the door
+     in the current home picture onto wherever that picture lands after object-fit. */
   position: absolute;
   left: 39%;
   top: 17%;
@@ -865,6 +865,22 @@ img {
   justify-content: center;
 }
 
+.art-switch {
+  flex: 1 0 100%;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.art-switch .soft-btn {
+  min-width: 7.4em;
+}
+
+.art-switch .soft-btn[aria-pressed="true"] {
+  background: #3f3454;
+  color: #f3e6c8;
+}
+
 .soft-btn {
   display: inline-flex;
   align-items: center;
@@ -1012,13 +1028,13 @@ body.is-phone-book .book.is-open .frame,
 body.is-phone-book .book.is-opening .frame,
 body.is-phone-book .book.is-closing .frame {
   width: min(92vw, 390px);
-  height: clamp(540px, calc(100dvh - 132px), 630px);
+  height: clamp(480px, calc(100dvh - 184px), 630px);
   max-width: calc(100vw - 20px);
 }
 
 /* The finale stays in the viewport with the controls. */
 body.is-phone-book .book[data-page="5"] .frame {
-  height: clamp(460px, calc(100dvh - 250px), 520px);
+  height: clamp(400px, calc(100dvh - 302px), 520px);
 }
 
 body.is-phone-book .cover {
@@ -1266,6 +1282,23 @@ body.is-phone-book .tools {
   grid-template-columns: 1fr 1fr;
   gap: 6px;
   padding-bottom: 2px;
+}
+
+body.is-phone-book .art-switch {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+body.is-phone-book .art-switch .soft-btn {
+  min-width: 0;
+  width: 100%;
+}
+
+body.is-phone-book .art-switch .soft-btn[aria-pressed="true"] {
+  background: #3f3454;
+  color: #f3e6c8;
 }
 
 body.is-phone-book .soft-btn {

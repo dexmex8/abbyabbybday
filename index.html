@@ -7,7 +7,7 @@
     <title>A Little Story for Althea</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="fonts.css" />
-    <link rel="stylesheet" href="style.css?v=phone-book-6" />
+    <link rel="stylesheet" href="style.css?v=art-switch-1" />
   </head>
   <body>
     <h1 class="sr-only">A Little Story for Althea</h1>
@@ -49,6 +49,10 @@
       <p class="hint" id="hint" role="status" aria-live="polite"></p>
 
       <div class="tools">
+        <div class="art-switch" role="group" aria-label="Choose the pictures">
+          <button class="soft-btn" id="goodArtBtn" type="button" aria-pressed="true">Good art</button>
+          <button class="soft-btn" id="bestArtBtn" type="button" aria-pressed="false">Best art</button>
+        </div>
         <button class="soft-btn mic-btn" id="micBtn" type="button" hidden aria-pressed="false">
           Mic
         </button>
@@ -187,6 +191,6 @@
       </template>
     </div>
 
-    <script src="app.js?v=phone-book-6"></script>
+    <script src="app.js?v=art-switch-1"></script>
   </body>
 </html>
