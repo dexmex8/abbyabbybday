@@ -20,6 +20,7 @@ const els = {
   confetti: document.getElementById("confetti"),
   goodArtBtn: document.getElementById("goodArtBtn"),
   bestArtBtn: document.getElementById("bestArtBtn"),
+  artSwitch: document.querySelector(".art-switch"),
 };
 
 const reduceMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -124,6 +125,7 @@ function paintArtSwitch() {
   const best = artStyle === "best";
   els.goodArtBtn.setAttribute("aria-pressed", best ? "false" : "true");
   els.bestArtBtn.setAttribute("aria-pressed", best ? "true" : "false");
+  if (els.artSwitch) els.artSwitch.hidden = page === 5;
 }
 
 function setArtStyle(next) {

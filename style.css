@@ -881,6 +881,11 @@ img {
   color: #f3e6c8;
 }
 
+.art-switch[hidden],
+body.is-phone-book .art-switch[hidden] {
+  display: none !important;
+}
+
 .soft-btn {
   display: inline-flex;
   align-items: center;
@@ -1034,7 +1039,7 @@ body.is-phone-book .book.is-closing .frame {
 
 /* The finale stays in the viewport with the controls. */
 body.is-phone-book .book[data-page="5"] .frame {
-  height: clamp(400px, calc(100dvh - 302px), 520px);
+  height: clamp(460px, calc(100dvh - 250px), 520px);
 }
 
 body.is-phone-book .cover {
